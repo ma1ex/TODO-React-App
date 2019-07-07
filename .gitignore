@@ -10,6 +10,12 @@
 # production
 /build
 
+# Environment
+.git
+
+# IDE
+.jshintrc
+
 # misc
 .DS_Store
 .env.local
@@ -23,6 +29,5 @@ yarn-error.log*
 
 TODO.md
 
-# IDE
-.jshintrc
+
 

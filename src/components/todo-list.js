@@ -1,21 +1,25 @@
 import React from 'react';
 
 import TodoListItem from './todo-list-item';
+import './todo-list.css';
 
 // React Component
-const TodoList = () => {
-    // Variables
-    const items = ['Item #1', 'Item #2', 'Item #3', 'Item #4'];
-    // React Element
-    const reactElement = <li>Add Item #3</li>;
-
+const TodoList = ( {todos} ) => {
+    //
+    const elements = todos.map( (item) => {
+        // Деструктуризация массива поэлементно на id и всё остальное
+        const { id, ...itemProps } = item;
+        
+        return (
+            <li key={ id } className="list-group-item">
+                <TodoListItem {...itemProps} />
+            </li>
+        );
+    });
+    
     return (
-        <ul>
-            { reactElement }
-            <li><TodoListItem label={ items[0] } /></li>
-            <li><TodoListItem label={ items[1] } important /></li>
-            <li><TodoListItem label={ items[2] } /></li>
-            <li><TodoListItem label={ items[3] } /></li>
+        <ul className="list-group todo-list">
+            { elements }
         </ul>
     );
 };
