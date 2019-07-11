@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 // App components
 import AppHeader from '../app-header';
@@ -10,42 +10,62 @@ import ItemStatusFilter from '../item-status-filter';
 import './app.css';
 
 // Main Component
-const App = () => {
+export default class App extends Component {
     
-    // Основные данные приложения
-    const todoData = [
-        { 
-            id: 1,
-            label: 'Drink Coffee', 
-            important: false
-        },
-        { 
-            id: 2,
-            label: 'Make Awesome App', 
-            important: true,
-        },
-        { 
-            id: 3,
-            label: 'Have a dinner', 
-            important: false
-        },
-        {
-            id: 4,
-            label: 'Have a lunch', 
-            important: false
-        }
-    ];    
-    
-    return (
-        <div className="todo-app">
-            <AppHeader toDo={1} done={4} />
-            <div className="top-panel d-flex">
-                <SearchPanel />
-                <ItemStatusFilter />
-            </div>
-            <TodoList todos={ todoData } onDeleted={ (id) => console.log('Del: ', id) } />
-        </div>
-    )
-};
+    state = {
+        // Основные данные приложения
+        todoData: [
+            { 
+                id: 0,
+                label: 'Drink Coffee', 
+                important: false
+            },
+            { 
+                id: 1,
+                label: 'Make Awesome App', 
+                important: true,
+            },
+            { 
+                id: 2,
+                label: 'Have a dinner', 
+                important: false
+            },
+            {
+                id: 3,
+                label: 'Have a lunch', 
+                important: false
+            }
+        ]
+    };
 
-export default App;
+    //
+    deleteItem = (id) => {
+        this.setState( ({todoData}) => {
+            /* const idx = todoData.findIndex((el) => el.id === id);
+            const newTodoData = [
+                ...todoData.slice(0, idx),
+                ...todoData.slice(idx + 1)
+            ]; */
+
+            // const newTodoData = todoData.filter((value, key) => {return key !== idx});
+            const newTodoData = todoData.filter((value) => value.id !== id);
+            
+            return {
+                todoData: newTodoData
+            };
+        });
+    };
+    
+    render() {
+        return (
+            <div className="todo-app">
+                <AppHeader toDo={1} done={4} />
+                <div className="top-panel d-flex">
+                    <SearchPanel />
+                    <ItemStatusFilter />
+                </div>
+                <TodoList todos={ this.state.todoData } onDeleted={ this.deleteItem } />
+            </div>
+        )
+    }
+};
