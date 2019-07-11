@@ -13,6 +13,9 @@ import './app.css';
 // Main Component
 export default class App extends Component {
     
+    //
+    maxId = 100;
+    
     state = {
         // Основные данные приложения
         todoData: [
@@ -56,6 +59,24 @@ export default class App extends Component {
             };
         });
     };
+
+    addItem = (text) => {
+        
+        const newItem = {
+            id:  this.maxId++, // Generated UID
+            label: text,
+            important: false
+        };
+        
+        this.setState( ({todoData}) => {
+            // Add Element in Array
+            const newTodoData = [...todoData, newItem];
+
+            return {
+                todoData: newTodoData
+            };
+        });
+    };
     
     render() {
         return (
@@ -66,7 +87,7 @@ export default class App extends Component {
                     <ItemStatusFilter />
                 </div>
                 <TodoList todos={ this.state.todoData } onDeleted={ this.deleteItem } />
-                <ItemAddForm />
+                <ItemAddForm onItemAdded={ this.addItem } />
             </div>
         )
     }
