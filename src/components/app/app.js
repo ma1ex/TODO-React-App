@@ -13,36 +13,30 @@ import './app.css';
 // Main Component
 export default class App extends Component {
     
-    //
+    // Генератор ID
     maxId = 100;
     
     state = {
         // Основные данные приложения
         todoData: [
-            { 
-                id: 0,
-                label: 'Drink Coffee', 
-                important: false
-            },
-            { 
-                id: 1,
-                label: 'Make Awesome App', 
-                important: true,
-            },
-            { 
-                id: 2,
-                label: 'Have a dinner', 
-                important: false
-            },
-            {
-                id: 3,
-                label: 'Have a lunch', 
-                important: false
-            }
+            this.createTodoItem('Drink Coffee'),
+            this.createTodoItem('Make Awesome App'),
+            this.createTodoItem('Have a dinner'),
+            this.createTodoItem('Have a lunch')
         ]
     };
 
-    //
+    // Метод создания нового объекта
+    createTodoItem(label) {
+        return {
+            id:  this.maxId++, // Generated UID
+            label,
+            important: false,
+            done: false
+        };
+    }
+
+    // Удаление элемента из массива данных
     deleteItem = (id) => {
         this.setState( ({todoData}) => {
             /* const idx = todoData.findIndex((el) => el.id === id);
@@ -60,13 +54,10 @@ export default class App extends Component {
         });
     };
 
+    // Добавление нового элемента в массив данных
     addItem = (text) => {
         
-        const newItem = {
-            id:  this.maxId++, // Generated UID
-            label: text,
-            important: false
-        };
+        const newItem = this.createTodoItem(text);
         
         this.setState( ({todoData}) => {
             // Add Element in Array
@@ -77,16 +68,64 @@ export default class App extends Component {
             };
         });
     };
+
+    // "Переключатель" параметров у элемента
+    toggleProperty(arr, id, propName) {
+        // получение индекса у элемента для изменения параметра
+        const idx = arr.findIndex((el) => el.id === id);
+        // Определенный элемент массива
+        const oldItem = arr[idx];
+        // Новый массив с элементами, включающий старый массив + новый элемент массива
+        //   с измененным параметром (состоянием)
+        const newItem = {
+            ...oldItem,
+            [propName]: !oldItem[propName]
+        };
+
+        // Construct new Array
+        return [
+            ...arr.slice(0, idx),
+            newItem,
+            ...arr.slice(idx + 1)
+        ];
+    }
+
+    // "Переключатель" параметра important
+    onToggleImportant = (id) => {
+        this.setState( ({todoData}) => {
+            return {
+                todoData: this.toggleProperty(todoData, id, 'important')
+            };
+        });
+    };
+    
+    // "Переключатель" параметра done
+    onToggleDone = (id) => {
+        this.setState( ({todoData}) => {
+            return {
+                todoData: this.toggleProperty(todoData, id, 'done')
+            };
+        });
+    };
     
     render() {
+        // Счетчики выполненных и оставшихся заданий
+        const doneCount = this.state.todoData.filter(el => el.done).length;
+        const todoCount = this.state.todoData.length - doneCount;
+        
         return (
             <div className="todo-app">
-                <AppHeader toDo={1} done={4} />
+                <AppHeader toDo={todoCount} done={doneCount} />
                 <div className="top-panel d-flex">
                     <SearchPanel />
                     <ItemStatusFilter />
                 </div>
-                <TodoList todos={ this.state.todoData } onDeleted={ this.deleteItem } />
+                <TodoList 
+                    todos={ this.state.todoData } 
+                    onDeleted={ this.deleteItem }
+                    onToggleImportant={ this.onToggleImportant }
+                    onToggleDone={ this.onToggleDone } 
+                />
                 <ItemAddForm onItemAdded={ this.addItem } />
             </div>
         )

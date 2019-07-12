@@ -4,30 +4,6 @@ import './todo-list-item.css';
 
 export default class TodoListItem extends Component {
 
-    // Состояния - изменяемые параметры компонента
-    state = {
-        done: false,
-        important: false
-    };
-    
-    // Отметка о выполнении
-    onLableClick = () => {
-        this.setState( ({ done }) => {
-            return {
-                done: !done
-            };
-        });
-    };
-
-    // Отметка о важности
-    onMarkImportant = () => {
-        this.setState( ({ important }) => {
-            return {
-                important: !important
-            };
-        });
-    };
-    
     /**
      * Основной метод рендеринга
      *
@@ -35,9 +11,7 @@ export default class TodoListItem extends Component {
      */
     render() {
         // Деструктуризация параметров компонента
-        const { label, onDeleted } = this.props;
-        // Деструктуризация параметров состояния компонента
-        const { done, important } = this.state;
+        const { label, onDeleted, done, important, onToggleDone, onToggleImportant } = this.props;
         
         let classNames = 'todo-list-item';
         if (done) {
@@ -50,11 +24,11 @@ export default class TodoListItem extends Component {
 
         return (
             <span className={classNames}>
-                <span className="todo-list-item-label" onClick={ this.onLableClick }>
+                <span className="todo-list-item-label" onClick={ onToggleDone }>
                     { label }
                 </span>
     
-                <button type="button" className="btn btn-outline-success btn-sm float-right" onClick={ this.onMarkImportant }>
+                <button type="button" className="btn btn-outline-success btn-sm float-right" onClick={ onToggleImportant }>
                     <i className="fa fa-exclamation" />
                 </button>
                 <button type="button" className="btn btn-outline-danger btn-sm float-right" onClick={ onDeleted }>
