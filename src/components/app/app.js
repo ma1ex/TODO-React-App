@@ -32,7 +32,8 @@ export default class App extends Component {
             id:  this.maxId++, // Generated UID
             label,
             important: false,
-            done: false
+            done: false,
+            searched: false
         };
     }
 
@@ -108,6 +109,19 @@ export default class App extends Component {
         });
     };
     
+    //
+    onSearch = (text) => {
+        this.setState( ({todoData}) => {
+            for (let i = 0; i < todoData.length; i++) {
+                if (todoData[i].label === text) {
+                    return {
+                        todoData: this.toggleProperty(todoData, todoData[i].id, 'searched')
+                    };
+                }
+            }
+        });
+    };
+    
     render() {
         // Счетчики выполненных и оставшихся заданий
         const doneCount = this.state.todoData.filter(el => el.done).length;
@@ -117,14 +131,14 @@ export default class App extends Component {
             <div className="todo-app">
                 <AppHeader toDo={todoCount} done={doneCount} />
                 <div className="top-panel d-flex">
-                    <SearchPanel />
+                    <SearchPanel onSearch={ this.onSearch } />
                     <ItemStatusFilter />
                 </div>
                 <TodoList 
-                    todos={ this.state.todoData } 
+                    todos={ this.state.todoData }
                     onDeleted={ this.deleteItem }
                     onToggleImportant={ this.onToggleImportant }
-                    onToggleDone={ this.onToggleDone } 
+                    onToggleDone={ this.onToggleDone }
                 />
                 <ItemAddForm onItemAdded={ this.addItem } />
             </div>

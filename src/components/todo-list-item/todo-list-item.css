@@ -31,3 +31,7 @@
     color: steelblue;
     font-weight: bold;
 }
+
+.searched {
+    background-color: yellow;
+}
