@@ -33,7 +33,7 @@ export default class App extends Component {
             label,
             important: false,
             done: false,
-            searched: false
+            searched: false    // Для подсветки результата поиска
         };
     }
 
@@ -109,16 +109,28 @@ export default class App extends Component {
         });
     };
     
-    //
-    onSearch = (text) => {
+    // 1-й вариант поиска
+    /* onSearch = (text) => {
         this.setState( ({todoData}) => {
             for (let i = 0; i < todoData.length; i++) {
-                if (todoData[i].label === text) {
+                if (todoData[i].label.toLowerCase() === text.toLowerCase()) {
                     return {
                         todoData: this.toggleProperty(todoData, todoData[i].id, 'searched')
                     };
                 }
             }
+        });
+    }; */
+    
+    // 2-й вариант поиска
+    onSearch = (text) => {
+        this.setState( ({todoData}) => {
+            const newTodoData = todoData.filter((value) => value.label
+                                            .toLowerCase()
+                                            .indexOf(text) !== -1);
+            return {
+                todoData: newTodoData
+            };
         });
     };
     
