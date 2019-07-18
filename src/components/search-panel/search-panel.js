@@ -5,29 +5,22 @@ import './search-panel.css';
 // React Component
 export default class SearchPanel extends Component {
     
-    /* onSearch = (e) => {
-        if (e.keyCode === 13) {
-            this.props.onSearch(e.target.value);
-            // Очистка поля после сабмита
-            e.target.value = '';
-        }
-    }; */
+    state = {
+        searchText: ''
+    }
     
     onSearch = (e) => {
-        this.props.onSearch(e.target.value);
-        // console.log(e.target.value);
+        const searchText = e.target.value;
+        this.setState({ searchText });
+        this.props.onSearch( searchText );
     };
     
     render() {
         
-        /* return (
-            <input type="text" className="form-control search-input" 
-                placeholder="type to search" onKeyDown={ this.onSearch } />
-        ); */
-        
         return (
             <input type="text" className="form-control search-input" 
-                placeholder="type to search" onChange={ this.onSearch } />
+                placeholder="type to search" onChange={ this.onSearch }
+                value={ this.state.searchText } />
         );
     }
 }

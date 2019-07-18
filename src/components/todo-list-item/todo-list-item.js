@@ -11,7 +11,7 @@ export default class TodoListItem extends Component {
      */
     render() {
         // Деструктуризация параметров компонента
-        const { label, onDeleted, done, important, onToggleDone, onToggleImportant, searched } = this.props;
+        const { label, onDeleted, done, important, onToggleDone, onToggleImportant } = this.props;
         
         let classNames = 'todo-list-item';
         if (done) {
@@ -20,10 +20,6 @@ export default class TodoListItem extends Component {
 
         if(important) {
             classNames += ' important';
-        }
-
-        if(searched) {
-            classNames += ' searched';
         }
 
         return (

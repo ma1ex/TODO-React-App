@@ -20,7 +20,7 @@
 
 .todo-list-item.important .todo-list-item-label {
     font-weight: bold;
-    color: steelblue;
+    color: #28A745;
 }
 
 .done {
@@ -30,8 +30,4 @@
 .important {
     color: steelblue;
     font-weight: bold;
-}
-
-.searched {
-    background-color: yellow;
 }

@@ -23,7 +23,9 @@ export default class App extends Component {
             this.createTodoItem('Make Awesome App'),
             this.createTodoItem('Have a dinner'),
             this.createTodoItem('Have a lunch')
-        ]
+        ],
+        // Текст для поиска
+        searchText: ''
     };
 
     // Метод создания нового объекта
@@ -32,21 +34,13 @@ export default class App extends Component {
             id:  this.maxId++, // Generated UID
             label,
             important: false,
-            done: false,
-            searched: false    // Для подсветки результата поиска
+            done: false
         };
     }
 
     // Удаление элемента из массива данных
     deleteItem = (id) => {
         this.setState( ({todoData}) => {
-            /* const idx = todoData.findIndex((el) => el.id === id);
-            const newTodoData = [
-                ...todoData.slice(0, idx),
-                ...todoData.slice(idx + 1)
-            ]; */
-
-            // const newTodoData = todoData.filter((value, key) => {return key !== idx});
             const newTodoData = todoData.filter((value) => value.id !== id);
             
             return {
@@ -109,36 +103,29 @@ export default class App extends Component {
         });
     };
     
-    // 1-й вариант поиска
-    /* onSearch = (text) => {
-        this.setState( ({todoData}) => {
-            for (let i = 0; i < todoData.length; i++) {
-                if (todoData[i].label.toLowerCase() === text.toLowerCase()) {
-                    return {
-                        todoData: this.toggleProperty(todoData, todoData[i].id, 'searched')
-                    };
-                }
-            }
-        });
-    }; */
-    
-    // 2-й вариант поиска
-    onSearch = (text) => {
-        this.setState( ({todoData}) => {
-            const newTodoData = todoData.filter((value) => value.label
-                                            .toLowerCase()
-                                            .indexOf(text) !== -1);
-            return {
-                todoData: newTodoData
-            };
-        });
+    // 3-й вариант поиска
+    onSearch = (searchText) => {
+        this.setState({ searchText });
     };
+
+    search(items, searchText) {
+        if (searchText.length === 0) {
+            return items;
+        }
+        
+        return items.filter((item) => item.label
+                        .toLowerCase()
+                        .indexOf(searchText) !== -1);
+    }
     
     render() {
+        const { todoData, searchText} = this.state;
         // Счетчики выполненных и оставшихся заданий
-        const doneCount = this.state.todoData.filter(el => el.done).length;
-        const todoCount = this.state.todoData.length - doneCount;
-        
+        const doneCount = todoData.filter(el => el.done).length;
+        const todoCount = todoData.length - doneCount;
+        // Массив найденных поиском элементов
+        const visibleItems = this.search(todoData, searchText);
+
         return (
             <div className="todo-app">
                 <AppHeader toDo={todoCount} done={doneCount} />
@@ -147,7 +134,7 @@ export default class App extends Component {
                     <ItemStatusFilter />
                 </div>
                 <TodoList 
-                    todos={ this.state.todoData }
+                    todos={ visibleItems }
                     onDeleted={ this.deleteItem }
                     onToggleImportant={ this.onToggleImportant }
                     onToggleDone={ this.onToggleDone }
