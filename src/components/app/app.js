@@ -25,7 +25,9 @@ export default class App extends Component {
             this.createTodoItem('Have a lunch')
         ],
         // Текст для поиска
-        searchText: ''
+        searchText: '',
+        // Фильтр
+        filter: 'all' // all, active, done
     };
 
     // Метод создания нового объекта
@@ -108,7 +110,12 @@ export default class App extends Component {
         this.setState({ searchText });
     };
 
-    search(items, searchText) {
+    /**
+     * Поиск по тексту
+     *
+     * @return  {array}  Отфильтрованный массив
+     */
+    search (items, searchText) {
         if (searchText.length === 0) {
             return items;
         }
@@ -117,21 +124,40 @@ export default class App extends Component {
                         .toLowerCase()
                         .indexOf(searchText) !== -1);
     }
+
+    // Изменение состояния фильтра
+    onFilter = (filter) => {
+        this.setState({ filter });
+    };
+    
+    // Filter
+    filter (items, filter) {
+        switch (filter) {
+            case 'all':
+                return items;
+            case 'active':
+                return items.filter((item) => !item.done);
+            case 'done':
+                return items.filter((item) => item.done);
+            default:
+                return items;
+        }
+    }
     
     render() {
-        const { todoData, searchText} = this.state;
+        const { todoData, searchText, filter} = this.state;
         // Счетчики выполненных и оставшихся заданий
         const doneCount = todoData.filter(el => el.done).length;
         const todoCount = todoData.length - doneCount;
         // Массив найденных поиском элементов
-        const visibleItems = this.search(todoData, searchText);
+        const visibleItems = this.filter(this.search(todoData, searchText), filter);
 
         return (
             <div className="todo-app">
                 <AppHeader toDo={todoCount} done={doneCount} />
                 <div className="top-panel d-flex">
                     <SearchPanel onSearch={ this.onSearch } />
-                    <ItemStatusFilter />
+                    <ItemStatusFilter filter={ filter } onFilter={ this.onFilter } />
                 </div>
                 <TodoList 
                     todos={ visibleItems }
